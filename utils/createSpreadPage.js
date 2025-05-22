@@ -50,13 +50,5 @@ export function createSpreadPage(doc, {
     });
   }
 
-  drawCutMarks(page, width, height, bleed);
-  drawMiddleMarks(page, {
-    imgWidth,
-    bleed,
-    finalHeight: height,
-    extraGutter,
-  });
-
   return page;
 }
