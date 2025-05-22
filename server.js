@@ -87,7 +87,7 @@ app.post('/process-pdfs', async (req, res) => {
     hours = hours % 12 || 12; // Convert to 12-hour format
     const hh = String(hours).padStart(2, '0');
 
-    const zipName = `spread_pdfs of ${mm}-${dd} at ${hh}-${minutes} ${ampm}.zip`;
+    const zipName = `spread_Cover_of_pdfs of ${mm}-${dd} at ${hh}-${minutes} ${ampm}.zip`;
 
 
     res.setHeader('Content-Type', 'application/zip');
