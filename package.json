@@ -1,0 +1,26 @@
+{
+  "name": "multipal-pdf-arranger",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "axios": "^1.9.0",
+    "body-parser": "^2.2.0",
+    "canvas": "^3.1.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "fs-extra": "^11.3.0",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^5.2.133",
+    "puppeteer": "^24.9.0"
+  }
+}

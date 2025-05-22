@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Process PDFs from Google Drive</title>
+  <link rel="stylesheet" href="/styles/style.css">
+</head>
+<body>
+  <h1>Submit Drive Folder Link</h1>
+
+  <form id="pdfForm" action="/process-pdfs" method="POST">
+    <input type="text" name="driveLink" placeholder="Paste Google Drive folder link" required />
+    <button type="submit">Process PDFs</button>
+    <div class="loading-overlay" id="loader">
+      <div class="spinner"></div>
+    </div>
+  </form>
+
+  <script>
+    const form = document.getElementById('pdfForm');
+    const loader = document.getElementById('loader');
+
+    form.addEventListener('submit', function (e) {
+      loader.style.display = 'flex';
+    });
+  </script>
+</body>
+</html>
