@@ -16,26 +16,11 @@
     </div>
   </form>
 
-  <% if (typeof skippedFiles !== 'undefined' && skippedFiles.length > 0) { %>
-    <h2>❌ Skipped Files:</h2>
-    <ul>
-      <% skippedFiles.forEach(file => { %>
-        <li><%= file %></li>
-      <% }); %>
-    </ul>
-  <% } %>
-
-  <% if (typeof showDownload !== 'undefined' && showDownload && zipName) { %>
-    <form method="GET" action="/download/<%= zipName %>">
-      <button type="submit">⬇ Download ZIP</button>
-    </form>
-  <% } %>
-
   <script>
     const form = document.getElementById('pdfForm');
     const loader = document.getElementById('loader');
 
-    form.addEventListener('submit', function () {
+    form.addEventListener('submit', function (e) {
       loader.style.display = 'flex';
     });
   </script>

@@ -71,7 +71,7 @@ app.post('/process-pdfs', async (req, res) => {
         const originalBuffer = Buffer.from(response.data);
 
         const pdfDoc = await PDFDocument.load(originalBuffer);
-        if (pdfDoc.getPageCount() !==17) {
+        if (pdfDoc.getPageCount() !== 17) {
           skippedFiles.push(cleanedName);
           continue;
         }
@@ -84,6 +84,13 @@ app.post('/process-pdfs', async (req, res) => {
       }
     }
 
+    // ✅ Add skipped file names as a .txt file to the zip
+    const skipListText = skippedFiles.length
+      ? 'Skipped Files:\n' + skippedFiles.join('\n')
+      : 'All files processed successfully.';
+    zip.addFile('skipped_files.txt', Buffer.from(skipListText, 'utf-8'));
+
+    // Create filename
     const now = new Date();
     const mm = String(now.getMonth() + 1).padStart(2, '0');
     const dd = String(now.getDate()).padStart(2, '0');
@@ -94,35 +101,18 @@ app.post('/process-pdfs', async (req, res) => {
     const hh = String(hours).padStart(2, '0');
 
     const zipName = `spread_Cover_of_pdfs_${mm}-${dd}_${hh}-${minutes}_${ampm}.zip`;
-    const zipPath = path.join(__dirname, 'public', 'exports', zipName);
 
-    // Ensure the exports folder exists
-    if (!fs.existsSync(path.dirname(zipPath))) {
-      fs.mkdirSync(path.dirname(zipPath), { recursive: true });
-    }
+    // ✅ Send zip directly to user
+    const zipBuffer = zip.toBuffer();
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename="${zipName}"`);
+    res.send(zipBuffer);
 
-    zip.writeZip(zipPath);
-    console.log(`✅ ZIP saved: ${zipPath}`);
-
-    res.render('index', {
-      skippedFiles,
-      showDownload: true,
-      zipName,
-    });
+    console.log(`✅ ZIP streamed to user: ${zipName}`);
   } catch (err) {
     console.error('❗ Error fetching files:', err.message);
     res.status(500).send('Error while processing PDFs.');
   }
-});
-
-app.get('/download/:zipName', (req, res) => {
-  const zipPath = path.join(__dirname, 'public', 'exports', req.params.zipName);
-
-  if (!fs.existsSync(zipPath)) {
-    return res.status(404).send('❌ ZIP file not found.');
-  }
-
-  res.download(zipPath);
 });
 
 
