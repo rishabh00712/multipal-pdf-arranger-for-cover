@@ -1,100 +1,109 @@
-  /* ===== Base Reset & Layout ===== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #0f0c29; /* deep space purple */
+  background: linear-gradient(to right, #302b63, #24243e);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+  padding-top: 50px;
+}
 
-    body {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1b1a2e);
-      background-size: 400% 400%;
-      animation: gradientShift 10s ease infinite;
-      color: #fff;
-    }
+h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #00f0ff;
+  text-shadow: 0 0 8px #00f0ff;
+}
 
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+form {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 350px;
+  position: relative;
+}
 
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 30px;
-      text-shadow: 0 0 10px #00f7ff;
-    }
+input[type="text"] {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #2c2c54;
+  color: white;
+  box-shadow: inset 0 0 8px #00f0ff;
+}
 
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      align-items: center;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 30px 40px;
-      border-radius: 16px;
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-      position: relative;
-    }
+button {
+  padding: 12px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(to right, #00f0ff, #ff00cc);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 10px #00f0ff;
+}
 
-    input[type="text"] {
-      width: 400px;
-      padding: 14px 20px;
-      border: none;
-      border-radius: 8px;
-      background: #ffffff10;
-      color: #fff;
-      font-size: 1rem;
-      outline: none;
-      box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
-    }
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px #ff00cc;
+}
 
-    button {
-      padding: 12px 24px;
-      font-size: 1rem;
-      background: linear-gradient(to right, #00f7ff, #ff00ff);
-      border: none;
-      border-radius: 10px;
-      color: white;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
-    }
+/* Loader Styles */
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
 
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 25px rgba(255, 0, 255, 0.6);
-    }
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 5px solid #00f0ff;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
 
-    /* ===== Loading Overlay ===== */
-    .loading-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.8);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      border-radius: 16px;
-      z-index: 2;
-    }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
-    .spinner {
-      border: 4px solid rgba(255, 255, 255, 0.2);
-      border-top: 4px solid #00f7ff;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-    }
+/* Results Section */
+h2 {
+  margin-top: 30px;
+  color: #ff4d6d;
+  font-size: 1.2rem;
+}
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+li {
+  margin-bottom: 6px;
+  font-size: 1rem;
+}
+
+/* Download button */
+form[action^="/download/"] {
+  margin-top: 20px;
+}

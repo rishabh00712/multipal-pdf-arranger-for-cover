@@ -4,8 +4,9 @@ import path from 'path';
 import fs from 'fs';
 import axios from 'axios';
 import { fileURLToPath } from 'url';
-import { generateSpreadPdf } from './utils/generateSpreadPdf.js';
+import { applyCoverPages } from './utils/generateSpreadPdf.js';
 import AdmZip from 'adm-zip';
+import { PDFDocument } from 'pdf-lib';
 
 const app = express();
 const PORT = 3000;
@@ -37,7 +38,7 @@ function extractFolderId(link) {
 app.get('/', (req, res) => {
   res.render('index');
 });
-// POST: Handle Drive link, process PDFs, and send ZIP
+
 app.post('/process-pdfs', async (req, res) => {
   const driveLink = req.body.driveLink;
   const folderId = extractFolderId(driveLink);
@@ -59,6 +60,7 @@ app.post('/process-pdfs', async (req, res) => {
     console.log(`🔧 Found ${files.length} PDFs. Processing...`);
 
     const zip = new AdmZip();
+    const skippedFiles = [];
 
     for (const file of files) {
       const cleanedName = file.name.replace(/\.pdf\.pdf$/, '.pdf');
@@ -67,38 +69,62 @@ app.post('/process-pdfs', async (req, res) => {
       try {
         const response = await axios.get(downloadUrl, { responseType: 'arraybuffer' });
         const originalBuffer = Buffer.from(response.data);
-        const spreadBuffer = await generateSpreadPdf(originalBuffer);
 
+        const pdfDoc = await PDFDocument.load(originalBuffer);
+        if (pdfDoc.getPageCount() !==17) {
+          skippedFiles.push(cleanedName);
+          continue;
+        }
+
+        const spreadBuffer = await applyCoverPages(originalBuffer);
         zip.addFile(`cover_page_${cleanedName}`, spreadBuffer);
-        console.log(`✅ Added to ZIP: spread_${cleanedName}`);
       } catch (err) {
         console.error(`❌ Failed to process ${cleanedName}:`, err.message);
+        skippedFiles.push(cleanedName);
       }
     }
 
-    const zipBuffer = zip.toBuffer();
     const now = new Date();
     const mm = String(now.getMonth() + 1).padStart(2, '0');
     const dd = String(now.getDate()).padStart(2, '0');
-
     let hours = now.getHours();
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12 || 12; // Convert to 12-hour format
+    hours = hours % 12 || 12;
     const hh = String(hours).padStart(2, '0');
 
-    const zipName = `spread_Cover_of_pdfs of ${mm}-${dd} at ${hh}-${minutes} ${ampm}.zip`;
+    const zipName = `spread_Cover_of_pdfs_${mm}-${dd}_${hh}-${minutes}_${ampm}.zip`;
+    const zipPath = path.join(__dirname, 'public', 'exports', zipName);
 
+    // Ensure the exports folder exists
+    if (!fs.existsSync(path.dirname(zipPath))) {
+      fs.mkdirSync(path.dirname(zipPath), { recursive: true });
+    }
 
-    res.setHeader('Content-Type', 'application/zip');
-    res.setHeader('Content-Disposition', `attachment; filename="${zipName}"`);
-    res.send(zipBuffer);
-    console.log(`✅ The Zip is downloded`);
+    zip.writeZip(zipPath);
+    console.log(`✅ ZIP saved: ${zipPath}`);
+
+    res.render('index', {
+      skippedFiles,
+      showDownload: true,
+      zipName,
+    });
   } catch (err) {
     console.error('❗ Error fetching files:', err.message);
     res.status(500).send('Error while processing PDFs.');
   }
 });
+
+app.get('/download/:zipName', (req, res) => {
+  const zipPath = path.join(__dirname, 'public', 'exports', req.params.zipName);
+
+  if (!fs.existsSync(zipPath)) {
+    return res.status(404).send('❌ ZIP file not found.');
+  }
+
+  res.download(zipPath);
+});
+
 
 // Start the server
 app.listen(PORT, () => {
