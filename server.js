@@ -73,10 +73,12 @@ app.post('/process-pdfs', async (req, res) => {
         const pdfDoc = await PDFDocument.load(originalBuffer);
         if (pdfDoc.getPageCount() !== 17) {
           skippedFiles.push(cleanedName);
+          console.log("skipped",{cleanedName});
           continue;
         }
 
         const spreadBuffer = await applyCoverPages(originalBuffer);
+        console.log(`✅ Added to ZIP: spread_${cleanedName}`);
         zip.addFile(`cover_page_${cleanedName}`, spreadBuffer);
       } catch (err) {
         console.error(`❌ Failed to process ${cleanedName}:`, err.message);

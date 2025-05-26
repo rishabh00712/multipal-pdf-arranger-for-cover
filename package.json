@@ -19,6 +19,7 @@
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "fs-extra": "^11.3.0",
+    "google-spreadsheet": "^4.1.4",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^5.2.133",
     "puppeteer": "^24.9.0"

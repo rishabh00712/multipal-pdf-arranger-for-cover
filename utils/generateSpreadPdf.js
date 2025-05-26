@@ -17,28 +17,28 @@ export async function applyCoverPages(buffer) {
   // Copy the template page from cover
   const [templatePage] = await outputPdf.copyPages(coverPdf, [0]);
   const page = outputPdf.addPage(templatePage);
-
-  const BLEED = 5 * 2.83465;
-  const IMG_WIDTH = 582.525;
-  const IMG_HEIGHT = 582.525;
+  const BLEEDX= 2*27;
+  const BLEEDY = 5.5 * 28.3465;
+  const IMG_WIDTH = 582.525 +15;
+  const IMG_HEIGHT = 582.525 + 30;
 
   // Get content pages (16 and 0)
   const [page16, page0] = await outputPdf.copyPages(sourcePdf, [16, 0]);
   const [embed16] = await outputPdf.embedPages([page16]);
   const [embed0] = await outputPdf.embedPages([page0]);
 
-  // Draw page 16 (left)
+    // Draw page 16 (left)
   page.drawPage(embed16, {
-    x: BLEED+67,
-    y: BLEED+167,
+    x: BLEEDX + 13,
+    y: BLEEDY + 10,
     width: IMG_WIDTH,
     height: IMG_HEIGHT,
   });
 
-  // Draw page 0 (right)
+  // Draw page 0 (right)  28.346
   page.drawPage(embed0, {
-    x:  BLEED + IMG_WIDTH+87,
-    y: BLEED+167,
+    x:  BLEEDX + IMG_WIDTH + 32,
+    y: BLEEDY + 10,
     width: IMG_WIDTH,
     height: IMG_HEIGHT,
   });
